@@ -36,14 +36,87 @@ Case 1 (OTP không trạng thái), Case 2 (CSKH handoff không minh bạch), Cas
 
 ```text
 Cho user trẻ đang muốn gửi báo cáo chi tiêu tháng vừa rồi qua email,
-prototype sẽ mô phỏng flow gửi email từ chatbot với các cải tiến:
-1. Hiển thị trạng thái gửi rõ ràng: "Đang gửi..." → "Đã gửi" / "Gửi thất bại" + nguyên nhân cụ thể
-2. Khi gửi thất bại hoặc email chưa xác thực, đưa ra 3 phương án thay thế: 
-   - Tải báo cáo trực tiếp trong app (PDF/CSV)
-   - Gửi link tải qua SMS
-   - Hiển thị preview báo cáo ngay trong chat
-3. Cho phép gửi lại dễ dàng + hướng dẫn rõ ("Nếu không nhận trong 5 phút, bấm gửi lại hoặc chọn phương án khác")
-4. Xử lý failure mode "user chờ email mà không có trạng thái, bị kẹt" bằng cách hiển thị recovery options ngay.
+prototype sẽ mô phỏng flow từ mock transactions → AI agent → báo cáo PDF → email delivery status.
+1. AI hiểu intent "Tháng này tôi chi bao nhiêu?" và "Gửi báo cáo cho email của tôi".
+2. Tổng hợp giao dịch tháng này, phân bổ theo danh mục và sinh insight.
+3. Tạo báo cáo 1 trang PDF có chart + tổng chi + breakdown + AI insight.
+4. Gửi email thật và hiển thị trạng thái gửi (sending/success/failure).
+5. Nếu email sai / gửi thất bại, cho user sửa/correction và gửi lại.
+```
+
+**Prototype architecture:**
+
+```
+Mock Transactions
+        ↓
+     AI Agent
+        ↓
+ Generate Report
+        ↓
+ Chart + Insights
+        ↓
+      PDF
+        ↓
+     Real Email
+```
+
+**Mock transaction data:**
+
+```json
+[
+  {
+    "date": "2026-06-01",
+    "category": "Ăn uống",
+    "amount": 45000
+  },
+  {
+    "date": "2026-06-03",
+    "category": "Ăn uống",
+    "amount": 115000
+  },
+  {
+    "date": "2026-06-05",
+    "category": "Di chuyển",
+    "amount": 25000
+  },
+  {
+    "date": "2026-06-10",
+    "category": "Học tập",
+    "amount": 55000
+  },
+  {
+    "date": "2026-06-20",
+    "category": "Hóa đơn",
+    "amount": 10000
+  }
+]
+```
+
+**AI insight example:**
+
+```text
+Tổng chi tiêu tháng này: 250.000đ
+
+Danh mục lớn nhất:
+Ăn uống (64%)
+
+Nhận xét:
+Chi tiêu ăn uống đang chiếm phần lớn ngân sách.
+Nếu giảm 20% nhóm này bạn có thể tiết kiệm khoảng 32.000đ/tháng.
+```
+
+**Visualization:**
+- Hiển thị biểu đồ tròn giống MoMo: phân bổ chi tiêu theo danh mục.
+- Thêm label tổng chi và các số liệu chính.
+
+**PDF:**
+- 1 trang gồm header "Moni Monthly Report", tháng/năm, tổng chi, chart, breakdown, AI Insight.
+- Có thể tạo bằng `reportlab` (Python) hoặc `jsPDF` (React).
+
+**Email delivery:**
+- Chatbot hỏi email nhận báo cáo.
+- Hiển thị trạng thái: "Generating report..." → "PDF created" → "Sending email..." → "✅ Email delivered".
+- Nếu lỗi, hiển thị lỗi email và cho user sửa/correction.
 ```
 
 ## 5. Auto/Aug decision
@@ -57,12 +130,43 @@ prototype sẽ mô phỏng flow gửi email từ chatbot với các cải tiến
 
 ## 6. Four paths
 
-| Path | Prototype phải thể hiện gì? |
-|---|---|
-| **Happy** | User: "Gửi báo cáo email cho tôi" → Chatbot xác nhận email → Gửi → Hiển thị "✅ Đã gửi thành công tới [email]" + thời gian. |
-| **Low-confidence** | User cung cấp email lạ → Chatbot hỏi lại: *"Gửi tới email này: [email]? (có/không)"* hoặc *"Email này có được xác thực không? Gửi thay vào email trong MoMo?"* |
-| **Failure** | Email gửi thất bại → Hiển thị "❌ Gửi thất bại (email chưa xác thực)" + 3 phương án: Tải trực tiếp / Gửi qua SMS / Gửi lại. |
-| **Correction** | User chọn phương án khác (vd "Tải trực tiếp") → Hiển thị link tải PDF/CSV + thời gian sẵn sàng + hướng dẫn rõ. |
+### Happy
+
+```text
+User: Gửi báo cáo
+↓
+PDF tạo thành công
+↓
+Email gửi thành công
+```
+
+### Low-confidence
+
+```text
+User: Gửi báo cáo
+↓
+AI thấy có 2 email
+↓
+Hỏi chọn email nào
+```
+
+### Failure
+
+```text
+Email sai format
+↓
+Không gửi được
+```
+
+### Correction
+
+```text
+Email sai
+↓
+User sửa email
+↓
+Gửi lại
+```
 
 ## 7. Failure mode nguy hiểm nhất
 
@@ -79,6 +183,6 @@ Owner kiểm thử path này là Nguyễn Thị Bảo Trân.
 
 | Thành viên | Việc phụ trách (Code) | Trách nhiệm bổ sung | Bằng chứng cần có trong repo |
 |---|---|---|---|
-| Nguyễn Thị Bảo Trân (917) | **Frontend UI mockup** (HTML/CSS/React component): hiển thị chatbot dialog cho gửi email + trạng thái gửi (pending/success/failed) + 3 phương án recovery (tải app, SMS, gửi lại) | Evidence research + Test failure case "email chưa xác thực / gửi thất bại" | Mockup UI có thể tương tác cho cả 4 paths; test log case email lỗi |
-| Trần Bá Đạt (778) | **Backend logic** (Python/Node): email delivery status simulation + recovery option API contract + mock email gateway | SPEC definition + API contract cho status check & recovery trigger | Code `check_email_status()` + `trigger_recovery_option()` + test case logic |
-| Nguyễn Thành Đạt (771) | **Integration & Demo** (kết nối FE/BE mockup): chatbot client + demo runner + kịch bản chạy 4 paths (happy/low-confidence/failure/correction) | README + repo structure + Demo script | Working demo (user input → BE check status → FE hiển thị recovery); README hướng dẫn chạy |
+| Nguyễn Thị Bảo Trân (917) | **Frontend UI mockup** (HTML/CSS/React component): hiển thị chatbot dialog, chart tròn, summary report và email status flow | Evidence research + Test failure case "email sai / gửi thất bại" | Mockup UI có thể tương tác cho cả 4 paths; test log case email lỗi |
+| Trần Bá Đạt (778) | **Report logic** (Python/Node): mock transaction aggregation, AI insight generation, PDF creation + email delivery status simulation | SPEC definition + report format + email status states | Code `generate_report()` + `create_pdf()` + `send_email()` + test case logic |
+| Nguyễn Thành Đạt (771) | **Integration & Demo** (kết nối FE/BE mockup): chatbot flow, report generation pipeline, email confirmation + resend | README + repo structure + Demo script | Working demo (user input → mock transactions → report/PDF → email status); README hướng dẫn chạy |
