@@ -15,10 +15,10 @@
 
 | Evidence | Nguồn | User/pain nói lên điều gì? | SPEC phải đổi gì? |
 |---|---|---|---|
-| Moni phân loại giao dịch nhưng không hiện độ tin cậy; sửa không rõ có học | Self-use Đạt (778) | User không biết nhãn nào đáng tin, sửa mệt | Thêm **badge độ tin cậy** + correction **lưu thành rule** |
+| Moni phân loại giao dịch nhưng không hiện độ tin cậy; sửa rồi không rõ có học | case4.jpg | User không biết nhãn nào đáng tin, sửa mệt | Thêm **badge độ tin cậy** + correction **lưu thành rule** |
 | Con số chi tiêu/đáp chat không dẫn nguồn dữ liệu | [chatbot_momo.jpg](../Day06-2A202600778-TranBaDat/01-invidual-workshop/chatbot_momo.jpg) | User không kiểm chứng được | Gắn nguồn "dựa trên N giao dịch của bạn" |
 | Chatbot báo "đã gửi SMS"/"đã chuyển CSKH" nhưng không có trạng thái/recovery thật | [case1.jpg](../Day06-2A202600917-NguyenThiBaoTran/01-invidual-workshop/case1.jpg), [case2.jpg](../Day06-2A202600917-NguyenThiBaoTran/01-invidual-workshop/case2.jpg) | AI over-claim → user kẹt | Nguyên lý chung: **chỉ khẳng định khi có trạng thái thật + luôn có recovery** |
-| Gợi ý đầu tư không hỏi suitability | Self-use Thành Đạt (771) | Lời khuyên có thể hại user | (Backlog) suitability-check trước khi nudge |
+| Gợi ý đầu tư không hỏi suitability | case5.jpg | Lời khuyên có thể hại user | (Backlog) suitability-check trước khi nudge |
 | Chatbot báo "sẽ gửi báo cáo email" nhưng không hiển thị trạng thái gửi / không có phương án thay thế khi lỗi | [case3_1.jpg](../Day06-2A202600917-NguyenThiBaoTran/01-invidual-workshop/case3_1.jpg), [case3_2.jpg](../Day06-2A202600917-NguyenThiBaoTran/01-invidual-workshop/case3_2.jpg), [case3_3.jpg](../Day06-2A202600917-NguyenThiBaoTran/01-invidual-workshop/case3_3.jpg) | User không biết email có đến, phải chờ mà không biết bước tiếp theo | **Trả về trạng thái gửi thật (queued/sent/delivered/failed)** + **gợi phương án thay thế (tải app, link, SMS)** |
 
 ## 3. Pain statement

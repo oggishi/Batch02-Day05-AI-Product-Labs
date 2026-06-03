@@ -8,9 +8,9 @@ Gom theo **workflow/pain**, không theo tên feature.
 
 | Cụm pain | Evidence thuộc cụm | Thành viên |
 |---|---|---|
-| **"AI kết luận mà không cho biết chắc tới đâu"** | Phân loại giao dịch không lộ confidence; con số chi tiêu không nói chỉ-trong-MoMo; lời khuyên/đáp chat không dẫn nguồn | Đạt (778), Thành Đạt (771) |
-| **"AI khuyên/hành động mà không kiểm điều kiện"** | Gợi ý đầu tư không hỏi suitability; gửi OTP mà không kiểm trạng thái gửi | Thành Đạt (771), Bảo Trân (917) |
-| **"AI nói đã làm xong nhưng không có đường sửa / không có trạng thái thật"** | Báo "đã chuyển CSKH" nhưng không handoff; sửa nhãn rồi không học; user không nhận SMS mà không có phương án thay thế; gửi báo cáo email mà không hiển thị trạng thái gửi (sent/delivered/failed) hay phương án backup | Bảo Trân (917), Đạt (778) |
+| **"AI kết luận mà không cho biết chắc tới đâu"** | Phân loại giao dịch không lộ confidence; con số chi tiêu không nói chỉ-trong-MoMo; lời khuyên/đáp chat không dẫn nguồn | Trân |
+| **"AI khuyên/hành động mà không kiểm điều kiện"** | Gợi ý đầu tư không hỏi suitability; gửi OTP mà không kiểm trạng thái gửi | Đạt |
+| **"AI nói đã làm xong nhưng không có đường sửa / không có trạng thái thật"** | Báo "đã chuyển CSKH" nhưng không handoff; sửa nhãn rồi không học; user không nhận SMS mà không có phương án thay thế; gửi báo cáo email mà không hiển thị trạng thái gửi (sent/delivered/failed) hay phương án backup |  Đạt , Trân |
 
 → Cả 3 cụm quy về **một gốc**: *thiếu tín hiệu tin cậy (confidence/nguồn/trạng thái) + thiếu đường recovery.*
 
